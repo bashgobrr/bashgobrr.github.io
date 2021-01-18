@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Beginner on BASHGOBRR</title>
+    <link>/tags/beginner/</link>
+    <description>Recent content in Beginner on BASHGOBRR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 06 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/beginner/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Some useful resources</title>
+      <link>/post/resources/</link>
+      <pubDate>Mon, 06 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/resources/</guid>
+      <description>Practice CTF  https://overthewire.org  Wargames, learning the basic of web, UNIX and binary exploitation.   https://hackthebox.eu  More advanced challenges and machines to pwn.   https://smashthestack.com  Collection of wargames.    Courses  https://missing.csail.mit.edu/  Great course on UNIX, git, vim and OS stuff.    YouTube channels  LiveOverflow Jon Hammond IppSec  </description>
+    </item>
+    
+  </channel>
+</rss>

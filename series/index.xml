@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Series on BASHGOBRR</title>
+    <link>/series/</link>
+    <description>Recent content in Series on BASHGOBRR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 06 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Resources</title>
+      <link>/series/resources/</link>
+      <pubDate>Mon, 06 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/series/resources/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cybertalent21</title>
+      <link>/series/cybertalent21/</link>
+      <pubDate>Sat, 16 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/series/cybertalent21/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

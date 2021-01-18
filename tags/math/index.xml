@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Math on BASHGOBRR</title>
+    <link>/tags/math/</link>
+    <description>Recent content in Math on BASHGOBRR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 16 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cybertalent21: part 3</title>
+      <link>/post/etj21_3/</link>
+      <pubDate>Sat, 16 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/etj21_3/</guid>
+      <description>Sist gikk vi igjennom oppdraget: Forrige DEL
+Kommer mer her senere!
+3_utfordinger Lett Rust_lett Fibonacci Middels Transfer Rust_middels Coordinates Vanskelig Euler </description>
+    </item>
+    
+  </channel>
+</rss>

